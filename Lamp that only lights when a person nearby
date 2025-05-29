@@ -62,3 +62,84 @@ TRIG HC-SR04	- Pin 9
 ECHO HC-SR04 -	Pin 10
 LED Anoda -	Pin 8
 LED Katoda -	GND (via resistor)
+
+
+
+//-----------------------------------------------------
+
+#define BLYNK_TEMPLATE_ID "YourTemplateID"
+#define BLYNK_TEMPLATE_NAME "SmartLampuOtomatis"
+#define BLYNK_AUTH_TOKEN "YourAuthToken"
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+// Ganti dengan SSID & password WiFi kamu
+char ssid[] = "YourWiFiSSID";
+char pass[] = "YourWiFiPassword";
+
+// Pin Sensor Ultrasonik
+#define trigPin D1
+#define echoPin D2
+
+// LED
+#define ledPin D3
+
+long duration;
+int distance;
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+
+  Blynk.begin(BLYNK_AUTH_TOKEN, ssid, pass);
+}
+
+void loop() {
+  Blynk.run();
+
+  // Trigger Ultrasonik
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Hitung durasi echo
+  duration = pulseIn(echoPin, HIGH);
+  distance = duration * 0.034 / 2;
+
+  Serial.print("Jarak: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  // Kirim jarak ke Blynk Gauge (V2)
+  Blynk.virtualWrite(V2, distance);
+
+  if (distance > 0 && distance < 100) {
+    digitalWrite(ledPin, HIGH);
+    Blynk.virtualWrite(V1, "Ada Orang");
+  } else {
+    digitalWrite(ledPin, LOW);
+    Blynk.virtualWrite(V1, "Kosong");
+  }
+
+  delay(1000);
+}
+
+
+Tampilan di Blynk
+Label (V1): menunjukkan status “Ada Orang” atau “Kosong”.
+
+Gauge (V2): menampilkan jarak dari sensor ultrasonik dalam cm.
+
+
+Komponen	NodeMCU (ESP8266)
+VCC HC-SR04	- 3.3V 
+GND HC-SR04	- GND
+TRIG HC-SR04	- D1 (GPIO5)
+ECHO HC-SR04	- D2 (GPIO4)
+LED Anoda	D3 - (GPIO0)
+LED Katoda	- GND (via resistor)
