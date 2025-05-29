@@ -1,0 +1,88 @@
+
+
+Arduino UNO
+
+Soil Moisture Sensor (tipe resistif atau kapasitif)
+
+LED + resistor 220Ω
+
+Kabel jumper
+
+Breadboard
+
+
+
+const int soilPin = A0;    // Pin analog untuk sensor kelembaban tanah
+const int ledPin = 2;      // LED indikator
+
+void setup() {
+  pinMode(soilPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int soilValue = analogRead(soilPin);  // Baca nilai dari sensor (0–1023)
+  int moisturePercent = map(soilValue, 1023, 0, 0, 100); // 0 = kering, 100 = basah
+
+  Serial.print("Kelembaban: ");
+  Serial.print(moisturePercent);
+  Serial.println(" %");
+
+  if (moisturePercent < 30) {
+    digitalWrite(ledPin, HIGH); // Tanah kering → nyalakan LED
+  } else {
+    digitalWrite(ledPin, LOW);  // Tanah cukup lembab → matikan LED
+  }
+
+  delay(1000); // Tunggu 1 detik sebelum pembacaan berikutnya
+}
+
+
+
+----------------------------------------------------
+
+#define BLYNK_TEMPLATE_ID "YourTemplateID"
+#define BLYNK_TEMPLATE_NAME "SoilMonitor"
+#define BLYNK_AUTH_TOKEN "YourAuthToken"
+
+#include <ESP8266WiFi.h>
+#include <BlynkSimpleEsp8266.h>
+
+char auth[] = BLYNK_AUTH_TOKEN;
+char ssid[] = "YourWiFiSSID";
+char pass[] = "YourWiFiPassword";
+
+// Pin
+#define SOIL_PIN A0
+#define LED_PIN D2
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(SOIL_PIN, INPUT);
+  pinMode(LED_PIN, OUTPUT);
+
+  Blynk.begin(auth, ssid, pass);
+}
+
+void loop() {
+  Blynk.run();
+
+  int soilValue = analogRead(SOIL_PIN); // 0 = basah, 1023 = kering
+  int moisturePercent = map(soilValue, 1023, 0, 0, 100); // Diubah jadi persentase
+
+  Blynk.virtualWrite(V0, moisturePercent); // Kirim ke Blynk
+
+  Serial.print("Kelembaban Tanah: ");
+  Serial.print(moisturePercent);
+  Serial.println(" %");
+
+  // Jika kelembaban < 30%, tanah dianggap kering
+  if (moisturePercent < 30) {
+    digitalWrite(LED_PIN, HIGH); // Nyalakan LED
+  } else {
+    digitalWrite(LED_PIN, LOW); // Matikan LED
+  }
+
+  delay(1000); // Sampling setiap 1 detik
+}
