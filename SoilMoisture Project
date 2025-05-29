@@ -10,7 +10,13 @@ Kabel jumper
 
 Breadboard
 
-
+Skema Koneksi
+Komponen	Arduino UNO
+Soil Sensor AOUT -	A0
+Soil Sensor VCC	- 5V
+Soil Sensor GND	- GND
+LED Anoda (+)	- D2
+LED Katoda (–)	- GND (via resistor)
 
 const int soilPin = A0;    // Pin analog untuk sensor kelembaban tanah
 const int ledPin = 2;      // LED indikator
