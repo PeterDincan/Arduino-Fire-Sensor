@@ -53,3 +53,38 @@ void loop() {
 
   delay(200);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Arduino UNO
+
+Sensor MQ-2
+
+buzzer
+
+LED + resistor (220Ω)
+
+LCD 16x2 + I2C module
+
+Kabel jumper dan breadboard
+
+connection
+Komponen	Arduino UNO
+MQ-2 - AOUT	A0
+LED (+) -	D8 (via resistor)
+Buzzer -	D9
+LCD I2C - SDA	A4 (UNO)
+LCD I2C - SCL	A5 (UNO)
