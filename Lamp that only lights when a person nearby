@@ -1,0 +1,64 @@
+
+#define trigPin 9
+#define echoPin 10
+#define ledPin 8
+
+long duration;
+int distance;
+
+void setup() {
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  pinMode(ledPin, OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop() {
+  // Kirim sinyal ultrasonic
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Hitung durasi pantulan
+  duration = pulseIn(echoPin, HIGH);
+
+  // Konversi ke jarak (cm)
+  distance = duration * 0.034 / 2;
+
+  Serial.print("Jarak: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+
+  // Jika ada orang dalam jarak < 100 cm, nyalakan LED
+  if (distance > 0 && distance < 100) {
+    digitalWrite(ledPin, HIGH);
+  } else {
+    digitalWrite(ledPin, LOW);
+  }
+
+  delay(500);
+}
+
+
+
+
+
+
+Arduino UNO
+
+Sensor Ultrasonik HC-SR04
+
+LED + resistor 220Ω
+
+Breadboard dan kabel jumper
+
+Koneksi Rangkaian
+Komponen	Arduino UNO
+VCC HC-SR04 -	5V
+GND HC-SR04	- GND
+TRIG HC-SR04	- Pin 9
+ECHO HC-SR04 -	Pin 10
+LED Anoda -	Pin 8
+LED Katoda -	GND (via resistor)
